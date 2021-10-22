@@ -74,9 +74,9 @@ def tensor_data(data, i):
     # input_img.data.resize_(img.size()).copy_(img)
     # input_qst.data.resize_(qst.size()).copy_(qst)
     # label.data.resize_(ans.size()).copy_(ans)
-    input_img = paddle.to_tensor(img)
-    input_qst = paddle.to_tensor(qst)
-    label = paddle.to_tensor(ans)
+    input_img.detach().reshape(img.shape).clone(img)
+    input_qst.detach().reshape(qst.shape).clone(qst)
+    label.detach().reshaoe(ans.shape).clone(ans)
 
 def cvt_data_axis(data):
     img = [e[0] for e in data]
