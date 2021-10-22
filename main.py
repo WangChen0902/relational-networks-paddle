@@ -5,15 +5,14 @@ Code is based on pytorch/examples/mnist (https://github.com/pytorch/examples/tre
 from __future__ import print_function
 import argparse
 import os
-#import cPickle as pickle
 import pickle
 import random
 import numpy as np
 import csv
 
-import torch
-from torch.utils.tensorboard import SummaryWriter
-from torch.autograd import Variable
+#import torch
+import paddle
+#from torch.utils.tensorboard import SummaryWriter
 
 from model import RN, CNN_MLP
 
@@ -40,13 +39,11 @@ parser.add_argument('--relation-type', type=str, default='binary',
                     help='what kind of relations to learn. options: binary, ternary (default: binary)')
 
 args = parser.parse_args()
-args.cuda = not args.no_cuda and torch.cuda.is_available()
+#args.cuda = not args.no_cuda and torch.cuda.is_available()
 
-torch.manual_seed(args.seed)
-if args.cuda:
-    torch.cuda.manual_seed(args.seed)
+paddle.seed(args.seed)
 
-summary_writer = SummaryWriter()
+#summary_writer = SummaryWriter()
 
 if args.model=='CNN_MLP': 
   model = CNN_MLP(args)
@@ -55,10 +52,10 @@ else:
   
 model_dirs = './model'
 bs = args.batch_size
-input_img = torch.FloatTensor(bs, 3, 75, 75)
-input_qst = torch.FloatTensor(bs, 18)
-label = torch.LongTensor(bs)
-
+input_img = paddle.to_tensor([bs, 3, 75, 75])
+input_qst = paddle.to_tensor([bs, 18])
+label = paddle.to_tensor(bs,dtype='int64')
+'''
 if args.cuda:
     model.cuda()
     input_img = input_img.cuda()
@@ -68,16 +65,18 @@ if args.cuda:
 input_img = Variable(input_img)
 input_qst = Variable(input_qst)
 label = Variable(label)
-
+'''
 def tensor_data(data, i):
-    img = torch.from_numpy(np.asarray(data[0][bs*i:bs*(i+1)]))
-    qst = torch.from_numpy(np.asarray(data[1][bs*i:bs*(i+1)]))
-    ans = torch.from_numpy(np.asarray(data[2][bs*i:bs*(i+1)]))
+    img = paddle.to_tensor(np.asarray(data[0][bs*i:bs*(i+1)]))
+    qst = paddle.to_tensor(np.asarray(data[1][bs*i:bs*(i+1)]))
+    ans = paddle.to_tensor(np.asarray(data[2][bs*i:bs*(i+1)]))
 
-    input_img.data.resize_(img.size()).copy_(img)
-    input_qst.data.resize_(qst.size()).copy_(qst)
-    label.data.resize_(ans.size()).copy_(ans)
-
+    # input_img.data.resize_(img.size()).copy_(img)
+    # input_qst.data.resize_(qst.size()).copy_(qst)
+    # label.data.resize_(ans.size()).copy_(ans)
+    input_img = paddle.to_tensor(img)
+    input_qst = paddle.to_tensor(qst)
+    label = paddle.to_tensor(ans)
 
 def cvt_data_axis(data):
     img = [e[0] for e in data]
@@ -140,21 +139,22 @@ def train(epoch, ternary, rel, norel):
     avg_acc_binary = sum(acc_rels) / len(acc_rels)
     avg_acc_unary = sum(acc_norels) / len(acc_norels)
 
+    '''
     summary_writer.add_scalars('Accuracy/train', {
         'ternary': avg_acc_ternary,
         'binary': avg_acc_binary,
         'unary': avg_acc_unary
     }, epoch)
-
+    '''
     avg_loss_ternary = sum(l_ternary) / len(l_ternary)
     avg_loss_binary = sum(l_binary) / len(l_binary)
     avg_loss_unary = sum(l_unary) / len(l_unary)
 
-    summary_writer.add_scalars('Loss/train', {
-        'ternary': avg_loss_ternary,
-        'binary': avg_loss_binary,
-        'unary': avg_loss_unary
-    }, epoch)
+    # summary_writer.add_scalars('Loss/train', {
+    #     'ternary': avg_loss_ternary,
+    #     'binary': avg_loss_binary,
+    #     'unary': avg_loss_unary
+    # }, epoch)
 
     # return average accuracy
     return avg_acc_ternary, avg_acc_binary, avg_acc_unary
@@ -199,21 +199,21 @@ def test(epoch, ternary, rel, norel):
     print('\n Test set: Ternary accuracy: {:.0f}% Binary accuracy: {:.0f}% | Unary accuracy: {:.0f}%\n'.format(
         accuracy_ternary, accuracy_rel, accuracy_norel))
 
-    summary_writer.add_scalars('Accuracy/test', {
-        'ternary': accuracy_ternary,
-        'binary': accuracy_rel,
-        'unary': accuracy_norel
-    }, epoch)
+    # summary_writer.add_scalars('Accuracy/test', {
+    #     'ternary': accuracy_ternary,
+    #     'binary': accuracy_rel,
+    #     'unary': accuracy_norel
+    # }, epoch)
 
     loss_ternary = sum(loss_ternary) / len(loss_ternary)
     loss_binary = sum(loss_binary) / len(loss_binary)
     loss_unary = sum(loss_unary) / len(loss_unary)
 
-    summary_writer.add_scalars('Loss/test', {
-        'ternary': loss_ternary,
-        'binary': loss_binary,
-        'unary': loss_unary
-    }, epoch)
+    # summary_writer.add_scalars('Loss/test', {
+    #     'ternary': loss_ternary,
+    #     'binary': loss_binary,
+    #     'unary': loss_unary
+    # }, epoch)
 
     return accuracy_ternary, accuracy_rel, accuracy_norel
 
@@ -264,7 +264,7 @@ if args.resume:
     filename = os.path.join(model_dirs, args.resume)
     if os.path.isfile(filename):
         print('==> loading checkpoint {}'.format(filename))
-        checkpoint = torch.load(filename)
+        checkpoint = paddle.load(filename)
         model.load_state_dict(checkpoint)
         print('==> loaded checkpoint {}'.format(filename))
 
