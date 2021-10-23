@@ -16,7 +16,7 @@ import paddle
 
 from model import RN, CNN_MLP
 
-
+#test
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch Relational-Network sort-of-CLVR Example')
 parser.add_argument('--model', type=str, choices=['RN', 'CNN_MLP'], default='RN', 
