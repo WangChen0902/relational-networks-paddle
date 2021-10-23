@@ -3,8 +3,6 @@ import paddle
 import paddle.nn as nn
 import paddle.nn.functional as F
 import paddle.optimizer as optim
-#from torch.autograd import Variable
-import paddle.fluid as fluid
 
 class ConvInputModel(nn.Layer):
     def __init__(self):
@@ -48,7 +46,7 @@ class FCOutputModel(nn.Layer):
         x = F.relu(x)
         x = F.dropout(x)
         x = self.fc3(x)
-        return F.log_softmax(x, dim=1)
+        return F.log_softmax(x, 1)
 
 class BasicModel(nn.Layer):
     def __init__(self, args, name):
@@ -62,8 +60,12 @@ class BasicModel(nn.Layer):
         loss = nll_loss(output, label)
         loss.backward()
         self.optimizer.step()
-        pred = output.data.max(1)[1]
-        correct = pred.eq(label.data).cpu().sum()
+        #pred = output.max(1)[1]
+        pred = paddle.argmax(output,axis=1)
+
+        #correct = pred.equal(label).sum()
+        a_correct = paddle.equal(pred,label)
+        correct = paddle.to_tensor(a_correct,dtype='int32').sum().item()      
         accuracy = correct * 100. / len(label)
         return accuracy, loss
         
@@ -71,8 +73,12 @@ class BasicModel(nn.Layer):
         output = self(input_img, input_qst)
         nll_loss = nn.loss.NLLLoss()
         loss = nll_loss(output, label)
-        pred = output.data.max(1)[1]
-        correct = pred.eq(label.data).cpu().sum()
+        #pred = output.data.max(1)[1]
+        pred = paddle.argmax(output,axis=1)
+
+        #correct = pred.eq(label.data).cpu().sum()
+        a_correct = paddle.equal(pred,label)
+        correct = paddle.to_tensor(a_correct,dtype='int32').sum().item()
         accuracy = correct * 100. / len(label)
         return accuracy, loss
 
@@ -120,7 +126,7 @@ class RN(BasicModel):
         np_coord_tensor = np.zeros((args.batch_size, 25, 2))
         for i in range(25):
             np_coord_tensor[:,i,:] = np.array( cvt_coord(i) )
-        self.coord_tensor=paddle.to_tensor(np_coord_tensor)
+        self.coord_tensor=paddle.to_tensor(np_coord_tensor,dtype='float32')
 
 
         self.fcout = FCOutputModel()
@@ -130,16 +136,18 @@ class RN(BasicModel):
 
     def forward(self, img, qst):
         x = self.conv(img) ## x = (64 x 24 x 5 x 5)
-        
         """g"""
-        mb = x.size()[0]
-        n_channels = x.size()[1]
-        d = x.size()[2]
+        mb = x.shape[0]
+        n_channels = x.shape[1]
+        d = x.shape[2]
         # x_flat = (64 x 25 x 24)
-        x_flat = x.view(mb,n_channels,d*d).permute(0,2,1)
+        #x_flat = x.view(mb,n_channels,d*d).permute(0,2,1)
+        x_flat = paddle.reshape(x,[mb,n_channels,d*d])
+        #x_flat = paddle.to_tensor(x_flat,dtype='float64')
+        x_flat = paddle.transpose(x_flat,perm=[0,2,1])
         
         # add coordinates
-        x_flat = torch.concat([x_flat, self.coord_tensor],2)
+        x_flat = paddle.concat([x_flat, self.coord_tensor],2)
         
 
         if self.relation_type == 'ternary':
@@ -167,25 +175,33 @@ class RN(BasicModel):
             x_full = paddle.concat([x_i, x_j, x_k], 4)  # (64x25x25x25x3*26+18)
 
             # reshape for passing through network
-            x_ = x_full.view(mb * (d * d) * (d * d) * (d * d), 96)  # (64*25*25*25x3*26+18) = (1.000.000, 96)
+            #x_ = x_full.view(mb * (d * d) * (d * d) * (d * d), 96)  # (64*25*25*25x3*26+18) = (1.000.000, 96)
+            x_ = paddle.reshape(x_full,shape=[mb * (d * d) * (d * d) * (d * d), 96])
+
         else:
             # add question everywhere
             qst = paddle.unsqueeze(qst, 1)
-            qst = qst.repeat(1, 25, 1)
+            #qst = qst.repeat(1, 25, 1)
+            qst = paddle.tile(qst,repeat_times=[1, 25, 1])
             qst = paddle.unsqueeze(qst, 2)
 
             # cast all pairs against each other
             x_i = paddle.unsqueeze(x_flat, 1)  # (64x1x25x26+18)
-            x_i = x_i.repeat(1, 25, 1, 1)  # (64x25x25x26+18)
+            #x_i = x_i.repeat(1, 25, 1, 1)  # (64x25x25x26+18)
+            x_i = paddle.tile(x_i,repeat_times=[1, 25, 1, 1])
             x_j = paddle.unsqueeze(x_flat, 2)  # (64x25x1x26+18)
+            
             x_j = paddle.concat([x_j, qst], 3)
-            x_j = x_j.repeat(1, 1, 25, 1)  # (64x25x25x26+18)
+            #x_j = x_j.repeat(1, 1, 25, 1)  # (64x25x25x26+18)
+            x_j = paddle.tile(x_j,repeat_times=[1, 1, 25, 1])
             
             # concatenate all together
             x_full = paddle.concat([x_i,x_j],3) # (64x25x25x2*26+18)
         
             # reshape for passing through network
-            x_ = x_full.view(mb * (d * d) * (d * d), 70)  # (64*25*25x2*26*18) = (40.000, 70)
+            #x_ = x_full.view(mb * (d * d) * (d * d), 70)  # (64*25*25x2*26*18) = (40.000, 70)
+            x_ = paddle.reshape(x_full,[mb * (d * d) * (d * d), 70])
+            
             
         x_ = self.g_fc1(x_)
         x_ = F.relu(x_)
@@ -198,9 +214,11 @@ class RN(BasicModel):
         
         # reshape again and sum
         if self.relation_type == 'ternary':
-            x_g = x_.view(mb, (d * d) * (d * d) * (d * d), 256)
+            #x_g = x_.view(mb, (d * d) * (d * d) * (d * d), 256)
+            x_g = paddle.reshape(x_,[mb, (d * d) * (d * d) * (d * d), 256])
         else:
-            x_g = x_.view(mb, (d * d) * (d * d), 256)
+            #x_g = x_.view(mb, (d * d) * (d * d), 256)
+            x_g = paddle.reshape(x_,[mb, (d * d) * (d * d), 256])
 
         x_g = x_g.sum(1).squeeze()
         

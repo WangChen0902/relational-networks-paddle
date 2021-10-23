@@ -52,9 +52,9 @@ else:
   
 model_dirs = './model'
 bs = args.batch_size
-input_img = paddle.to_tensor([bs, 3, 75, 75])
-input_qst = paddle.to_tensor([bs, 18])
-label = paddle.to_tensor(bs,dtype='int64')
+input_img = paddle.empty(shape=[bs, 3, 75, 75])
+input_qst = paddle.empty(shape=[bs, 18])
+label = paddle.empty(shape=[bs],dtype='int64')
 '''
 if args.cuda:
     model.cuda()
@@ -67,16 +67,22 @@ input_qst = Variable(input_qst)
 label = Variable(label)
 '''
 def tensor_data(data, i):
-    img = paddle.to_tensor(np.asarray(data[0][bs*i:bs*(i+1)]))
-    qst = paddle.to_tensor(np.asarray(data[1][bs*i:bs*(i+1)]))
+    img = paddle.to_tensor(np.asarray(data[0][bs*i:bs*(i+1)]),dtype='float32')
+    qst = paddle.to_tensor(np.asarray(data[1][bs*i:bs*(i+1)]),dtype='float32')
     ans = paddle.to_tensor(np.asarray(data[2][bs*i:bs*(i+1)]))
 
     # input_img.data.resize_(img.size()).copy_(img)
     # input_qst.data.resize_(qst.size()).copy_(qst)
     # label.data.resize_(ans.size()).copy_(ans)
-    input_img.detach().reshape(img.shape).clone(img)
-    input_qst.detach().reshape(qst.shape).clone(qst)
-    label.detach().reshaoe(ans.shape).clone(ans)
+    # input_img.detach().resize(img.size()).copy_(img)
+    # input_qst.detach().resize(qst.size()).copy_(qst)
+    # label.detach().resize(ans.size()).copy_(ans)
+    global input_img
+    global input_qst
+    global label
+    input_img = img
+    input_qst = qst
+    label = ans
 
 def cvt_data_axis(data):
     img = [e[0] for e in data]
@@ -111,18 +117,18 @@ def train(epoch, ternary, rel, norel):
     for batch_idx in range(len(rel[0]) // bs):
         tensor_data(ternary, batch_idx)
         accuracy_ternary, loss_ternary = model.train_(input_img, input_qst, label)
-        acc_ternary.append(accuracy_ternary.item())
-        l_ternary.append(loss_ternary.item())
+        acc_ternary.append(accuracy_ternary)
+        l_ternary.append(loss_ternary)
 
         tensor_data(rel, batch_idx)
         accuracy_rel, loss_binary = model.train_(input_img, input_qst, label)
-        acc_rels.append(accuracy_rel.item())
-        l_binary.append(loss_binary.item())
+        acc_rels.append(accuracy_rel)
+        l_binary.append(loss_binary)
 
         tensor_data(norel, batch_idx)
         accuracy_norel, loss_unary = model.train_(input_img, input_qst, label)
-        acc_norels.append(accuracy_norel.item())
-        l_unary.append(loss_unary.item())
+        acc_norels.append(accuracy_norel)
+        l_unary.append(loss_unary)
 
         if batch_idx % args.log_interval == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)] '
@@ -180,18 +186,18 @@ def test(epoch, ternary, rel, norel):
     for batch_idx in range(len(rel[0]) // bs):
         tensor_data(ternary, batch_idx)
         acc_ter, l_ter = model.test_(input_img, input_qst, label)
-        accuracy_ternary.append(acc_ter.item())
-        loss_ternary.append(l_ter.item())
+        accuracy_ternary.append(acc_ter)
+        loss_ternary.append(l_ter)
 
         tensor_data(rel, batch_idx)
         acc_bin, l_bin = model.test_(input_img, input_qst, label)
-        accuracy_rels.append(acc_bin.item())
-        loss_binary.append(l_bin.item())
+        accuracy_rels.append(acc_bin)
+        loss_binary.append(l_bin)
 
         tensor_data(norel, batch_idx)
         acc_un, l_un = model.test_(input_img, input_qst, label)
-        accuracy_norels.append(acc_un.item())
-        loss_unary.append(l_un.item())
+        accuracy_norels.append(acc_un)
+        loss_unary.append(l_un)
 
     accuracy_ternary = sum(accuracy_ternary) / len(accuracy_ternary)
     accuracy_rel = sum(accuracy_rels) / len(accuracy_rels)
