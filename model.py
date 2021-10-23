@@ -191,6 +191,8 @@ class RN(BasicModel):
             x_i = paddle.tile(x_i,repeat_times=[1, 25, 1, 1])
             x_j = paddle.unsqueeze(x_flat, 2)  # (64x25x1x26+18)
             
+
+
             x_j = paddle.concat([x_j, qst], 3)
             #x_j = x_j.repeat(1, 1, 25, 1)  # (64x25x25x26+18)
             x_j = paddle.tile(x_j,repeat_times=[1, 1, 25, 1])
