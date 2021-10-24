@@ -1,8 +1,41 @@
-Pytorch implementation of Relational Networks - [A simple neural network module for relational reasoning](https://arxiv.org/pdf/1706.01427.pdf)
+# Relational-Networks-Paddle
+
+Paddle implementation of Relational Networks - [A simple neural network module for relational reasoning](https://arxiv.org/pdf/1706.01427.pdf)
 
 Implemented & tested on Sort-of-CLEVR task.
 
-## Sort-of-CLEVR
+## Introduction
+
+Reference Code:  [relational-networks](https://github.com/kimhc6028/relational-networks)
+
+Paper: [A simple neural network module for relational reasoning](https://arxiv.org/pdf/1706.01427v1.pdf)
+
+## Reprod Log
+Based on 'reprod_log' model, the following documents are produced.
+```
+log_reprod
+├── forward_paddle.npy
+├── forward_torch.npy
+├── metric_paddle.npy
+├── metric_torch.npy
+├── loss_paddle.npy
+├── loss_torch.npy
+├── bp_align_paddle.npy
+├── bp_align_torch.npy
+├── train_align_paddle.npy
+├── train_align_benchmark.npy
+```
+
+Based on 'ReprodDiffHelper' model, the following five log files are produced.
+
+```
+├── forward_diff.log
+├── metric_diff.log
+├── loss_diff.log
+├── bp_align_diff.log
+├── train_align_diff.log
+```
+## Dataset
 
 Sort-of-CLEVR is simplified version of [CLEVR](http://cs.stanford.edu/people/jcjohns/clevr/).This is composed of 10000 images and 20 questions (10 relational questions and 10 non-relational questions) per each image. 6 colors (red, green, blue, orange, gray, yellow) are assigned to randomly chosen shape (square or circle), and placed in a image.
 
@@ -24,8 +57,6 @@ These questions are "relational" because the agent has to consider the relations
 
 Questions are encoded into a vector of size of 11 : 6 for one-hot vector for certain color among 6 colors, 2 for one-hot vector of relational/non-relational questions. 3 for one-hot vector of 3 subtypes.
 
-<img src="./data/sample.png" width="256">
-
 I.e., with the sample image shown, we can generate non-relational questions like:
 
 1) What is the shape of the red object? => Circle (even though it does not really look like "circle"...)
@@ -38,17 +69,10 @@ And relational questions:
 2) What is the shape of the object furthest to the orange object? => circle
 3) How many objects have same shape with the blue object? => 3
 
-## Setup
+## Environment
 
-Create conda environment from `environment.yml` file
-```
-$ conda env create -f environment.yml
-```
-Activate environment
-```
-$ conda activate RN3
-```
-If you don't use conda install python 3 normally and use `pip install` to install remaining dependencies. The list of dependencies can be found in the `environment.yml` file.
+- Frameworks:
+* PaddlePaddle 2.1.2
 
 ## Usage
 
@@ -71,19 +95,28 @@ Alternatively, use
 to train the ternary RN model.
 
 ## Modifications
+
 In the original paper, Sort-of-CLEVR task used different model from CLEVR task. However, because model used CLEVR requires much less time to compute (network is much smaller), this model is used for Sort-of-CLEVR task.
 
 ## Result
 
-| | Relational Networks (20th epoch) | CNN + MLP (without RN, 100th epoch) |
+| | RN_Reference (20th epoch) | RN_paddle |
 | --- | --- | --- |
-| Non-relational question | 99% | 66% |
-| Relational question | 89% | 66% |
+| Non-relational question | 99% | 99% |
+| Relational question | 83% | 85% |
 
-CNN + MLP occured overfitting to the training data.
+## Note
 
-Relational networks shows far better results in relational questions and non-relation questions. 
+We provide training results of 20-25 epochs. The best accuracy of these epochs is as follows:
 
-## Contributions
+20-epoch: Ternary accuracy: 55.34% Binary accuracy: 79.93% | Unary accuracy: 98.59%
 
-[@gngdb](https://github.com/gngdb) speeds up the model by 10 times.
+21-epoch: Ternary accuracy: 55.24% Binary accuracy: 82.66% | Unary accuracy: 99.24%
+
+22-epoch: Ternary accuracy: 54.69% Binary accuracy: 82.56% | Unary accuracy: 99.44%
+
+23-epoch: Ternary accuracy: 55.44% Binary accuracy: 83.82% | Unary accuracy: 99.40%
+
+24-epoch: Ternary accuracy: 56.00% Binary accuracy: 84.93% | Unary accuracy: 99.50%
+
+25-epoch: Ternary accuracy: 56.80% Binary accuracy: 85.18% | Unary accuracy: 99.34%
