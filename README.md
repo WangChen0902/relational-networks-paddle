@@ -102,21 +102,21 @@ In the original paper, Sort-of-CLEVR task used different model from CLEVR task. 
 
 | | RN_Reference (20th epoch) | RN_paddle |
 | --- | --- | --- |
-| Non-relational question | 99% | 100% |
-| Relational question | 83% | 86% |
+| Non-relational question | 99% | 99% |
+| Relational question | 83% | 85% |
 
 ## Note
 
 We provide training results of 20-25 epochs. The best accuracy of these epochs is as follows:
 
-20-epoch: Ternary accuracy: 55% Binary accuracy: 80% | Unary accuracy: 99%
+20-epoch: Ternary accuracy: 55.34% Binary accuracy: 79.93% | Unary accuracy: 98.59%
 
-21-epoch: Ternary accuracy: 55% Binary accuracy: 83% | Unary accuracy: 99%
+21-epoch: Ternary accuracy: 55.24% Binary accuracy: 82.66% | Unary accuracy: 99.24%
 
-22-epoch: Ternary accuracy: 55% Binary accuracy: 83% | Unary accuracy: 99%
+22-epoch: Ternary accuracy: 54.69% Binary accuracy: 82.56% | Unary accuracy: 99.44%
 
-23-epoch: Ternary accuracy: 56% Binary accuracy: 83% | Unary accuracy: 99%
+23-epoch: Ternary accuracy: 55.44% Binary accuracy: 83.82% | Unary accuracy: 99.40%
 
-24-epoch: Ternary accuracy: 56% Binary accuracy: 83% | Unary accuracy: 99%
+24-epoch: Ternary accuracy: 56.00% Binary accuracy: 84.93% | Unary accuracy: 99.50%
 
-25-epoch: Ternary accuracy: 58% Binary accuracy: 86% | Unary accuracy: 100%
+25-epoch: Ternary accuracy: 56.80% Binary accuracy: 85.18% | Unary accuracy: 99.34%
