@@ -1,5 +1,5 @@
-[2021/10/24 13:44:58] root INFO: train_acc_binary: 
-[2021/10/24 13:44:58] root INFO: 	mean diff: check passed: False, value: 1.5798497713912525
-[2021/10/24 13:44:58] root INFO: train_acc_unary: 
-[2021/10/24 13:44:58] root INFO: 	mean diff: check passed: False, value: 0.3347485303722948
-[2021/10/24 13:44:58] root INFO: diff check failed
+[2021/10/24 16:19:27] root INFO: test_acc_binary: 
+[2021/10/24 16:19:27] root INFO: 	mean diff: check passed: False, value: 0.25201612903227044
+[2021/10/24 16:19:27] root INFO: test_acc_unary: 
+[2021/10/24 16:19:27] root INFO: 	mean diff: check passed: False, value: 0.9576612903225765
+[2021/10/24 16:19:27] root INFO: diff check failed
