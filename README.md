@@ -102,8 +102,8 @@ In the original paper, Sort-of-CLEVR task used different model from CLEVR task. 
 
 | | RN_Reference (20th epoch) | RN_paddle |
 | --- | --- | --- |
-| Non-relational question | 99% | 98% |
-| Relational question | 89% | 80% |
+| Non-relational question | 99% | 100% |
+| Relational question | 89% | 86% |
 
 ## Note
 
