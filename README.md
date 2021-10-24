@@ -2,6 +2,8 @@ Pytorch implementation of Relational Networks - [A simple neural network module 
 
 Implemented & tested on Sort-of-CLEVR task.
 
+## Dataset
+
 ## Sort-of-CLEVR
 
 Sort-of-CLEVR is simplified version of [CLEVR](http://cs.stanford.edu/people/jcjohns/clevr/).This is composed of 10000 images and 20 questions (10 relational questions and 10 non-relational questions) per each image. 6 colors (red, green, blue, orange, gray, yellow) are assigned to randomly chosen shape (square or circle), and placed in a image.
@@ -38,17 +40,31 @@ And relational questions:
 2) What is the shape of the object furthest to the orange object? => circle
 3) How many objects have same shape with the blue object? => 3
 
-## Setup
+## Reprod Log
+Based on 'reprod_log' model, the following documents are produced.
+```
+log_reprod
+├── forward_paddle.npy
+├── forward_torch.npy
+├── metric_paddle.npy
+├── metric_torch.npy
+├── loss_paddle.npy
+├── loss_torch.npy
+├── bp_align_paddle.npy
+├── bp_align_torch.npy
+├── train_align_paddle.npy
+├── train_align_benchmark.npy
+```
 
-Create conda environment from `environment.yml` file
+Based on 'ReprodDiffHelper' model, the following five log files are produced.
+
 ```
-$ conda env create -f environment.yml
+├── forward_diff.log
+├── metric_diff.log
+├── loss_diff.log
+├── bp_align_diff.log
+├── train_align_diff.log
 ```
-Activate environment
-```
-$ conda activate RN3
-```
-If you don't use conda install python 3 normally and use `pip install` to install remaining dependencies. The list of dependencies can be found in the `environment.yml` file.
 
 ## Usage
 
@@ -80,7 +96,3 @@ In the original paper, Sort-of-CLEVR task used different model from CLEVR task. 
 | Non-relational question | 99% | 98% |
 | Relational question | 89% | 79% |
 
-
-## Contributions
-
-[@gngdb](https://github.com/gngdb) speeds up the model by 10 times.
