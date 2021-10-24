@@ -105,3 +105,18 @@ In the original paper, Sort-of-CLEVR task used different model from CLEVR task. 
 | Non-relational question | 99% | 98% |
 | Relational question | 89% | 80% |
 
+## Note
+
+We provide training results of 20-25 epochs. The best accuracy of these epochs is as follows:
+
+20-epoch: Ternary accuracy: 66% | Relations accuracy: 94% | Non-relations accuracy: 100%
+
+21-epoch: Ternary accuracy: 56% | Relations accuracy: 95% | Non-relations accuracy: 100%
+
+22-epoch: Ternary accuracy: 53% | Relations accuracy: 95% | Non-relations accuracy: 100%
+
+23-epoch: Ternary accuracy: 64% | Relations accuracy: 95% | Non-relations accuracy: 100%
+
+24-epoch: Ternary accuracy: 59% | Relations accuracy: 95% | Non-relations accuracy: 98%
+
+25-epoch: Ternary accuracy: 59% | Relations accuracy: 95% | Non-relations accuracy: 100%
