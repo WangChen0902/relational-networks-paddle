@@ -1,10 +1,41 @@
-Pytorch implementation of Relational Networks - [A simple neural network module for relational reasoning](https://arxiv.org/pdf/1706.01427.pdf)
+### Relational-Networks-Paddle
+
+Paddle implementation of Relational Networks - [A simple neural network module for relational reasoning](https://arxiv.org/pdf/1706.01427.pdf)
 
 Implemented & tested on Sort-of-CLEVR task.
 
-## Dataset
+## Introduction
 
-## Sort-of-CLEVR
+Reference Code:  [relational-networks](https://github.com/kimhc6028/relational-networks)
+
+Paper: [A simple neural network module for relational reasoning](https://arxiv.org/pdf/1706.01427v1.pdf)
+
+## Reprod Log
+Based on 'reprod_log' model, the following documents are produced.
+```
+log_reprod
+├── forward_paddle.npy
+├── forward_torch.npy
+├── metric_paddle.npy
+├── metric_torch.npy
+├── loss_paddle.npy
+├── loss_torch.npy
+├── bp_align_paddle.npy
+├── bp_align_torch.npy
+├── train_align_paddle.npy
+├── train_align_benchmark.npy
+```
+
+Based on 'ReprodDiffHelper' model, the following five log files are produced.
+
+```
+├── forward_diff.log
+├── metric_diff.log
+├── loss_diff.log
+├── bp_align_diff.log
+├── train_align_diff.log
+```
+## Dataset
 
 Sort-of-CLEVR is simplified version of [CLEVR](http://cs.stanford.edu/people/jcjohns/clevr/).This is composed of 10000 images and 20 questions (10 relational questions and 10 non-relational questions) per each image. 6 colors (red, green, blue, orange, gray, yellow) are assigned to randomly chosen shape (square or circle), and placed in a image.
 
@@ -40,31 +71,10 @@ And relational questions:
 2) What is the shape of the object furthest to the orange object? => circle
 3) How many objects have same shape with the blue object? => 3
 
-## Reprod Log
-Based on 'reprod_log' model, the following documents are produced.
-```
-log_reprod
-├── forward_paddle.npy
-├── forward_torch.npy
-├── metric_paddle.npy
-├── metric_torch.npy
-├── loss_paddle.npy
-├── loss_torch.npy
-├── bp_align_paddle.npy
-├── bp_align_torch.npy
-├── train_align_paddle.npy
-├── train_align_benchmark.npy
-```
+## Environment
 
-Based on 'ReprodDiffHelper' model, the following five log files are produced.
-
-```
-├── forward_diff.log
-├── metric_diff.log
-├── loss_diff.log
-├── bp_align_diff.log
-├── train_align_diff.log
-```
+- Frameworks:
+* PaddlePaddle 2.1.2
 
 ## Usage
 
@@ -87,6 +97,7 @@ Alternatively, use
 to train the ternary RN model.
 
 ## Modifications
+
 In the original paper, Sort-of-CLEVR task used different model from CLEVR task. However, because model used CLEVR requires much less time to compute (network is much smaller), this model is used for Sort-of-CLEVR task.
 
 ## Result
