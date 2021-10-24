@@ -1,4 +1,4 @@
-### Relational-Networks-Paddle
+# Relational-Networks-Paddle
 
 Paddle implementation of Relational Networks - [A simple neural network module for relational reasoning](https://arxiv.org/pdf/1706.01427.pdf)
 
@@ -56,8 +56,6 @@ Relational questions are composed of 3 subtypes:
 These questions are "relational" because the agent has to consider the relations between objects.
 
 Questions are encoded into a vector of size of 11 : 6 for one-hot vector for certain color among 6 colors, 2 for one-hot vector of relational/non-relational questions. 3 for one-hot vector of 3 subtypes.
-
-<img src="./data/sample.png" width="256">
 
 I.e., with the sample image shown, we can generate non-relational questions like:
 
