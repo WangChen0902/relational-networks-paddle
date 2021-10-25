@@ -88,11 +88,6 @@ and
  	 $ python main.py 
 
 to train the binary RN model. 
-Alternatively, use 
-
- 	 $ python main.py --relation-type=ternary
-
-to train the ternary RN model.
 
 ## Modifications
 
