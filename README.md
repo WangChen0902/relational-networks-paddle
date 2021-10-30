@@ -1,6 +1,7 @@
 # Relational-Networks-Paddle
 
 Paddle implementation of Relational Networks - [A simple neural network module for relational reasoning](https://arxiv.org/pdf/1706.01427.pdf)
+An introduction to the project on AI studio - [relational-networks](https://aistudio.baidu.com/aistudio/projectdetail/2522451)
 
 Implemented & tested on Sort-of-CLEVR task.
 
