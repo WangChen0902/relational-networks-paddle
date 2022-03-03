@@ -3,6 +3,7 @@ import paddle
 import paddle.nn as nn
 import paddle.nn.functional as F
 import paddle.optimizer as optim
+import os
 
 class ConvInputModel(nn.Layer):
     def __init__(self):
@@ -52,6 +53,7 @@ class BasicModel(nn.Layer):
     def __init__(self, args, name):
         super(BasicModel, self).__init__()
         self.name=name
+        self.args = args
 
     def train_(self, input_img, input_qst, label):
         self.optimizer.clear_grad()
@@ -83,7 +85,7 @@ class BasicModel(nn.Layer):
         return accuracy, loss
 
     def save_model(self, epoch):
-        paddle.save(self.state_dict(), 'model/epoch_{}_{:02d}.pdparams'.format(self.name, epoch))
+        paddle.save(self.state_dict(), os.path.join(self.args.output_dir, 'epoch_{}_{:02d}.pdparams'.format(self.name, epoch)))
 
 
 class RN(BasicModel):
@@ -222,7 +224,8 @@ class RN(BasicModel):
             #x_g = x_.view(mb, (d * d) * (d * d), 256)
             x_g = paddle.reshape(x_,[mb, (d * d) * (d * d), 256])
 
-        x_g = x_g.sum(1).squeeze()
+        # x_g = x_g.sum(1).squeeze()
+        x_g = x_g.sum(1)
         
         """f"""
         x_f = self.f_fc1(x_g)

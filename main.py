@@ -37,6 +37,12 @@ parser.add_argument('--resume', type=str,
                     help='resume from model stored')
 parser.add_argument('--relation-type', type=str, default='binary',
                     help='what kind of relations to learn. options: binary, ternary (default: binary)')
+parser.add_argument('--output-dir', type=str, default='./',
+                    help='path to save')
+parser.add_argument('--pretrained', type=str, default='./',
+                    help='path of pretrained model')
+parser.add_argument('--device', type=str, default='gpu',
+                    help='device')
 
 args = parser.parse_args()
 #args.cuda = not args.no_cuda and torch.cuda.is_available()
@@ -44,6 +50,7 @@ args = parser.parse_args()
 paddle.seed(args.seed)
 
 #summary_writer = SummaryWriter()
+paddle.device.set_device(args.device)
 
 if args.model=='CNN_MLP': 
   model = CNN_MLP(args)
