@@ -55,10 +55,10 @@ bash test_tipc/test_train_inference_python.sh test_tipc/configs/Relational/train
 输出结果如下。
 
 ```
-[33m Run successfully with command - python3.7 main.py --device=gpu  --output-dir=./test_tipc/output/norm_train_gpus_1_autocast_null --epochs=1     --batch-size=64     !  [0m
-[33m Run successfully with command - python3.7 tools/export_model.py --pretrained=./test_tipc/output/norm_train_gpus_1_autocast_null/epoch_RN_01.pdparams --save-inference-dir=./test_tipc/output/norm_train_gpus_1_autocast_null!  [0m
-[33m Run successfully with command - python3.7 tools/infer.py --use-gpu=True     --model-dir=./test_tipc/output/norm_train_gpus_1_autocast_null/ --batch-size=1   --benchmark=False     > ./test_tipc/output/python_infer_gpu_usetrt_null_precision_null_batchsize_1.log 2>&1 !  [0m
-[33m Run successfully with command - python3.7 tools/infer.py --use-gpu=False     --model-dir=./test_tipc/output/norm_train_gpus_1_autocast_null/ --batch-size=1     --benchmark=False     > ./test_tipc/output/python_infer_cpu_usemkldnn_null_threads_null_precision_null_batchsize_1.log 2>&1 !  [0m
+[33m Run successfully with command - python3.7 main.py --device=gpu  --output-dir=./test_tipc/output/norm_train_gpus_1_autocast_null --epochs=1     --batch-size=64     !  [0m
+[33m Run successfully with command - python3.7 tools/export_model.py --pretrained=./test_tipc/output/norm_train_gpus_1_autocast_null/epoch_RN_01.pdparams --save-inference-dir=./test_tipc/output/norm_train_gpus_1_autocast_null!  [0m
+[33m Run successfully with command - python3.7 tools/infer.py --use-gpu=True     --model-dir=./test_tipc/output/norm_train_gpus_1_autocast_null/ --batch-size=1   --benchmark=False     > ./test_tipc/output/python_infer_gpu_usetrt_null_precision_null_batchsize_1.log 2>&1 !  [0m
+[33m Run successfully with command - python3.7 tools/infer.py --use-gpu=False     --model-dir=./test_tipc/output/norm_train_gpus_1_autocast_null/ --batch-size=1     --benchmark=False     > ./test_tipc/output/python_infer_cpu_usemkldnn_null_threads_null_precision_null_batchsize_1.log 2>&1 !  [0m
   
 ```
 
