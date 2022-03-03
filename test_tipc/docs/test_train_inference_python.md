@@ -52,12 +52,6 @@ Linux端基础训练推理功能测试的主程序为`test_train_inference_pytho
 bash test_tipc/test_train_inference_python.sh test_tipc/configs/Relational/train_infer_python.txt lite_train_lite_infer
 ```
 
-基础训练推理测试命令如下所示。
-
-```bash
-bash test_tipc/test_train_inference_python.sh test_tipc/configs/Relational/train_infer_python.txt lite_train_lite_infer
-```
-
 输出结果如下。
 
 ```
